@@ -1,0 +1,7 @@
+#\u7AEF\u53E3\u53F7
+server:
+  port: 9200
+
+spring:
+  application:
+    name: gulimall-search

@@ -1,0 +1,70 @@
+server:
+  port: 99
+
+spring:
+  application:
+    name: gulimall-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848 #nacos\u5730\u5740
+    gateway:
+      routes:
+      - id: bilibili_route
+        uri: https://www.bilibili.com/
+        predicates:
+        - Query=url,bilibili
+
+      - id: baidu_route
+        uri: https://www.baidu.com/
+        predicates:
+        - Query=url,baidu
+
+      #商品服务路由
+      - id: product_route
+        uri: lb://gulimall-product
+        predicates:
+        - Path=/api/product/**
+        filters:
+        - RewritePath=/api/?(?<segment>.*), /$\{segment}   #   http://localhost:99/api/product/category/list/tree   =>   http://localhost:10001/product/category/list/tree
+
+      #第三方服务路由
+      - id: third_party_route
+        uri: lb://gulimall-third-party
+        predicates:
+        - Path=/api/thirdParty/**
+        filters:
+        - RewritePath=/api/?(?<segment>.*), /$\{segment}  #   http://localhost:99/api/thirdParty/oss/policy  =>  http://localhost:99/thirdParty/oss/policy
+
+        #会员服务路由
+      - id: member_route
+        uri: lb://gulimall-member
+        predicates:
+          - Path=/api/member/**
+        filters:
+          - RewritePath=/api/?(?<segment>.*), /$\{segment}  #   http://localhost:99/api/member/member/coupons =>  http://localhost:99/member/member/coupons
+
+        #仓储服务路由
+      - id: ware_route
+        uri: lb://gulimall-ware
+        predicates:
+          - Path=/api/ware/**
+        filters:
+          - RewritePath=/api/?(?<segment>.*), /$\{segment}  #   http://localhost:99/api/member/member/coupons =>  http://localhost:99/member/member/coupons
+
+        #后台系统,放在最后兜底
+      - id: admin_route
+        uri: lb://renren-fast
+        predicates:
+        - Path=/api/**
+        filters:
+        - RewritePath=/api/?(?<segment>.*), /renren-fast/$\{segment}  #   http://localhost:99/api/captcha.jpg  =>  http://localhost:8080/renren-fast/captcha.jpg  (context-path: /renren-fast)
+
+        # gulimall.com域名下的前台请求,转发到商品服务
+      - id: gulimall_host_route
+        uri: lb://gulimall-product
+        predicates:
+          - Host=**.gulimall.com
+
+
+

@@ -15,9 +15,16 @@
     <description>gulimall-order</description>
     <properties>
         <java.version>1.8</java.version>
-        <spring-cloud.version>2021.0.3</spring-cloud.version>
+        <spring-cloud.version>Hoxton.SR10</spring-cloud.version>
+        <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
     </properties>
     <dependencies>
+        <!--commmon依赖-->
+        <dependency>
+            <groupId>com.xuyuchao</groupId>
+            <artifactId>gulimall-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
