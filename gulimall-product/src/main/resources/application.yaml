@@ -29,6 +29,14 @@ spring:
   redis:
     host: 192.168.174.103 #redis地址
     port: 6379
+  cache:
+    type: redis #设置SpringCache缓存类型为redis
+    redis:
+      time-to-live: 3600000 #设置SpringCache缓存的过期时间 ms
+      cache-null-values: true #是否缓存空值,防止缓存穿透
+#      key-prefix: CACHE_  #key的前缀
+#      use-key-prefix: false  #是否使用key前缀,默认使用
+
 
 #声明MP的xml文件
 mybatis-plus:
