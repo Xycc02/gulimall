@@ -25,5 +25,8 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
     PageUtils queryPageByCondition(Map<String, Object> params);
     //商品上架(保存到es)
     void up(Long spuId);
+    //商品下架(删除es中要下架的skuId商品信息)
+    boolean down(Long spuId);
+
 }
 

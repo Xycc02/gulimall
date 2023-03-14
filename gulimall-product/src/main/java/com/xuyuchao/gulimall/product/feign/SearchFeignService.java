@@ -12,4 +12,7 @@ import java.util.List;
 public interface SearchFeignService {
     @PostMapping("/search/save/product")
     R productStatusUp(@RequestBody List<SkuEsModel> skuEsModels);
+
+    @PostMapping("/search/down/product")
+    R productDown(@RequestBody List<Long> skuIds);
 }

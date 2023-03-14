@@ -61,10 +61,17 @@ spring:
         - RewritePath=/api/?(?<segment>.*), /renren-fast/$\{segment}  #   http://localhost:99/api/captcha.jpg  =>  http://localhost:8080/renren-fast/captcha.jpg  (context-path: /renren-fast)
 
         # gulimall.com域名下的前台请求,转发到商品服务
-      - id: gulimall_host_route
+      - id: gulimall_index_route
         uri: lb://gulimall-product
         predicates:
-          - Host=**.gulimall.com
+          - Host=gulimall.com
+
+
+        # search.gulimall.com域名下的前台请求,转发到搜索服务
+      - id: gulimall_search_route
+        uri: lb://gulimall-search
+        predicates:
+          - Host=search.gulimall.com
 
 
 

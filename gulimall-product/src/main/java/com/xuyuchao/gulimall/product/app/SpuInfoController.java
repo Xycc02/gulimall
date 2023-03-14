@@ -37,6 +37,12 @@ public class SpuInfoController {
         return R.ok();
     }
 
+    @PostMapping("/{spuId}/down")
+    public R spuDown(@PathVariable Long spuId) {
+        boolean isSuccess = spuInfoService.down(spuId);
+        return isSuccess == true ? R.ok() : R.error("商品下架失败");
+    }
+
     /**
      * 列表
      */

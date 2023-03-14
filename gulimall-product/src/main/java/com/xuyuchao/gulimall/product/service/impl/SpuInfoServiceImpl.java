@@ -2,6 +2,7 @@ package com.xuyuchao.gulimall.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -260,5 +261,27 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean down(Long spuId) {
+        //1.根据spuId查询所有sku信息
+        List<SkuInfoEntity> skuList = skuInfoService.getSkusBySpuId(spuId);
+        //2.将所有sku信息转为id集合
+        List<Long> skuIds = skuList.stream().map(sku -> {
+            return sku.getSkuId();
+        }).collect(Collectors.toList());
+        //调用ES服务,删除对应skuId的数据
+        R result = searchFeignService.productDown(skuIds);
+        if(result.getCode() == 0) {
+            //商品下架成功
+            this.update(
+                    new LambdaUpdateWrapper<SpuInfoEntity>()
+                            .set(SpuInfoEntity::getPublishStatus,ProductConstant.StatusEnum.SPU_DOWN.getCode())
+            );
+            return true;
+        }else {
+            return false;
+        }
+    }
 
 }

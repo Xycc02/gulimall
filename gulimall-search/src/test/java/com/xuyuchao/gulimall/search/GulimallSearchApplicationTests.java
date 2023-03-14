@@ -5,9 +5,10 @@ import com.xuyuchao.gulimall.search.config.GulimallESConfig;
 import lombok.Data;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,9 +37,9 @@ class GulimallSearchApplicationTests {
     void testIndexData() throws IOException {
         //1.创建request请求
         IndexRequest request = new IndexRequest("users");
-        request.id("1");
+        request.id("3");
         User user = new User();
-        user.setUsername("徐宇超");
+        user.setUsername("test1");
         user.setAge(20);
         user.setGender("男");
         String jsonString = JSON.toJSONString(user);
@@ -55,4 +56,19 @@ class GulimallSearchApplicationTests {
         private int age;
         private String gender;
     }
+
+
+    /**
+     * 删除指定数据 TermQueryBuilder封装条件
+     * @throws IOException
+     */
+    @Test
+    void testDelData() throws IOException {
+        DeleteByQueryRequest request = new DeleteByQueryRequest("users");
+        request.setQuery(new TermQueryBuilder("gender", "男"));
+        request.setQuery(new TermQueryBuilder("username","test1"));
+        //发送请求
+        client.deleteByQuery(request,GulimallESConfig.COMMON_OPTIONS);
+    }
+
 }
